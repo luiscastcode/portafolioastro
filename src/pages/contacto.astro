@@ -3,6 +3,11 @@
 import Layout from '../layouts/Layout.astro';
 import Contact from '../components/Contacto.jsx';
 ---
-<Layout>
+ 
+<Layout
+  metatitulo="Contacto para proyectos | LCastCode"
+  metadescrip="Contáctame hoy mismo para discutir tu próximo proyecto."
+  ruta="contacto/"
+>
   <Contact client:load />
 </Layout>

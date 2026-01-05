@@ -1,16 +1,19 @@
 ---
-import Layout from '../layouts/Layout.astro';
- 
-import Hero from '../components/Hero.jsx';
-import Servicios from '../components/Servicios';
-import ProyectosDestacados from '../components/ProyectosDestacados.jsx';
-import Clima from '../components/Clima.jsx';
+import Layout from "../layouts/Layout.astro";
+
+import Hero from "../components/Hero.jsx";
+import Servicios from "../components/Servicios";
+import ProyectosDestacados from "../components/ProyectosDestacados.jsx";
+import Clima from "../components/Clima.jsx";
 ---
 
-
-<Layout>
-	<Hero client:load/>
-	<Servicios client:load/>
-	<Clima client:load/>
-	<ProyectosDestacados client:load/>	
+<Layout
+	metatitulo="Desarrollo Web y Diseño Web Profesional Valencia Venezuela"
+	metadescrip="En Valencia Venezuela, servicios de desarrollo web y diseño web profesional. Creamos sitios web atractivos y funcionales que impulsan tu presencia en línea."
+	ruta=""
+>
+	<Hero client:load />
+	<Servicios client:load />
+	<Clima client:load />
+	<ProyectosDestacados client:load />
 </Layout>

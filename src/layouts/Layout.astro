@@ -2,19 +2,78 @@
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import '../styles/global.css';
+import ChatAgent from '../components/ChatAgent.jsx';
+
+interface Props {
+  metatitulo: string;
+  metadescrip: string;
+  ruta: string;
+  
+}
+
+const {metatitulo, metadescrip, ruta} = Astro.props;
 ---
 
 <html lang="es">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href="/logo.png" />
 		<meta name="viewport" content="width=device-width" />
-		 
-		<title>Astro</title>
+		<link rel="canonical" href={`https://lcastcode.vercel.app/${ruta}`} />
+		<title>{metatitulo}</title>
+		<meta name="description" content={metadescrip} />
+    <meta
+      name="keywords"
+      content="desarrollo web, diseño web, web apps, sitios web, paginas web, desarrollo web valencia, diseño web valencia, desarrollo web venezuela, diseño web venezuela"
+    />
+     
+    <meta name="robots" content="all" />
+    <meta name="google-adsense-account" content="ca-pub-1207813510935304" />
+    <!-- Twitter -->
+    <meta property="twitter:title" content={metatitulo} />
+    <meta property="twitter:description" content={metadescrip} />
+    <meta
+      property="twitter:image"
+      content="https://lcastcode.vercel.app/img/logo.png"
+    />
+    <meta
+      property="twitter:url"
+      content={`https://lcastcode.vercel.app/${ruta}`}
+    />
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <!-- Facebook -->
+    <meta property="og:title" content={metatitulo} />
+    <meta property="og:description" content={metadescrip} />
+    <meta
+      property="og:url"
+      content={`https://lcastcode.vercel.app/${ruta}`}
+    />
+    <meta
+      property="og:image"
+      content="https://lcastcode.vercel.app/img/logo.png"
+    />
+    <meta property="og:type" content="website" />
+
+    <script
+      is:inline
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-X9SCDHRN05"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-X9SCDHRN05");
+    </script>
+		
 	</head>
 	<body>
     <Header />
 		<slot/>
     <Footer />
+		<ChatAgent client:load />
 	</body>
 </html>

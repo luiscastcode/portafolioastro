@@ -1,8 +1,13 @@
 ---
-import '../styles/global.css';
-import Layout from '../layouts/Layout.astro';
-import Experienci from '../components/Experiencia.jsx';
+import "../styles/global.css";
+import Layout from "../layouts/Layout.astro";
+import Experienci from "../components/Experiencia.jsx";
 ---
-<Layout>
+
+<Layout
+  metatitulo="Mi Experiencia - LCastCode"
+  metadescrip="Descubre mi trayectoria profesional, habilidades y proyectos destacados en el desarrollo web y la tecnología."
+  ruta="experiencia/"
+>
   <Experienci client:load />
 </Layout>
