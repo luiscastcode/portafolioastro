@@ -1,6 +1,6 @@
 {
   "name": "portafolio-astro",
-  "type": "module",
+  "type": "module",  
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
