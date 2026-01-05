@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+@theme {
+  --color-accent-default: oklch(82.8% 0.189 84.429);
+  --color-accent-hover: oklch(72.8% 0.189 84.429);
+  --color-primary: oklch(12.8% 0.05 264.429);
+  --font-primary: 'Poppins', sans-serif;
+  --font-secondary: 'Fira Code', monospace;
+}
+
+@layer base {
+  body {
+    @apply font-primary bg-primary text-white leading-loose;
+  }
+}

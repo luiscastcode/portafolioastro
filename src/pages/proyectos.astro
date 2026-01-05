@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Proyecto from "../components/Proyectos.jsx";
+import Cta from "../components/Cta.jsx";
+---
+
+<Layout>
+  <Proyecto client:load />
+  <Cta
+    titulo="¿Listo para comenzar?"
+    descrip="Contáctame hoy mismo para discutir tu próximo proyecto."
+    nomboton="Contactar"
+    url="/contacto"
+    target=""
+  />
+</Layout>

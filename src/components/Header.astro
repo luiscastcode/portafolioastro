@@ -1,0 +1,14 @@
+---
+import Nav from "./Nav";
+
+import MobileNav from "./MobilNav";
+---
+
+<header class="container py-1 md:py-12 px-2">
+  <div class="hidden md:flex">
+    <Nav client:load />
+  </div>
+
+  {/*navegacion movil*/}
+  <div class="flex md:hidden"><MobileNav client:load /></div>
+</header>
