@@ -22,11 +22,12 @@ const PROJECTS_DATA = [
   },
   {
     id: '3',
-    title: 'Gotoca Imports',
-    description: 'Ecommerce para la empresa importadora de repuestos para camiones Mack.',
-    image: '/img/proyectos/gotoca.jpg',
-    tags: ['Wordpress', 'WooCommerce'],
-    status: 'INACTIVO'
+    title: 'Fencingven App',
+    description: 'Aplicación móvil para la Federación venezolana de Esgrima.',
+    image: '/img/proyectos/bannerfa.webp',
+    tags: ['Android', 'React Native'],
+    status: 'VISITAR',
+    url: 'https://play.google.com/store/apps/details?id=com.fencingven.fencingvenapp&pcampaignid=web_share'
   },
   {
     id: '4',
@@ -53,7 +54,15 @@ const PROJECTS_DATA = [
     image: '/img/proyectos/bd.jpg',
     tags: ['Wordpress', 'Elementor'],
     status: 'INACTIVO'
-  }
+  },
+  {
+    id: '7',
+    title: 'Gotoca Imports',
+    description: 'Ecommerce para la empresa importadora de repuestos para camiones Mack.',
+    image: '/img/proyectos/gotoca.jpg',
+    tags: ['Wordpress', 'WooCommerce'],
+    status: 'INACTIVO'
+  },
 ];
 const ProjectCard = ({ project }) => {
   return (

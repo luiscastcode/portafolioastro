@@ -3,16 +3,16 @@ import React from 'react';
 
 const Hero = () => {
   return (
-    <section id="home" className="relative pt-32 pb-20 overflow-hidden min-h-[90vh] flex flex-col justify-center">
+    <section id="home" className="relative pt-8 md:pt-28 pb-20 overflow-hidden min-h-[90vh] flex flex-col justify-center">
       <div className="grid-pattern absolute inset-0 z-0"></div>
       <div className="hero-glow"></div>
       
       <div className="container mx-auto px-6 relative z-10 text-center">
-        <div className="inline-block px-4 py-1.5 mb-6 text-sm font-medium bg-white/5 border border-white/10 rounded-full text-blue-400 backdrop-blur-sm animate-fade-in">
+        <div className="inline-block px-4 py-1.5 mb-6 text-sm font-medium bg-white/5 border border-white/10 rounded-full text-amber-400 backdrop-blur-sm animate-fade-in">
           Disponible para nuevos proyectos ✨
         </div>
         
-        <h1 className="text-5xl md:text-8xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-linear-to-b from-white to-gray-500">
+        <h1 className="text-4xl md:text-8xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-linear-to-b from-white to-gray-500">
           Desarrollo y Diseño Web <br className="hidden md:block" />
           Para Emprendimientos
         </h1>
@@ -25,7 +25,7 @@ const Hero = () => {
           <a href="#proyectos" className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2">
             Ver Proyectos
           </a>
-          <a href="#servicios" className="px-8 py-4 bg-white/5 border border-white/10 text-white font-semibold rounded-lg hover:bg-white/10 transition-all">
+          <a href="#servicios" className="px-8 py-4 bg-amber-300 border border-white/10 text-gray-900 font-semibold rounded-lg hover:bg-white/10 transition-all">
             Nuestros Servicios
           </a>
         </div>

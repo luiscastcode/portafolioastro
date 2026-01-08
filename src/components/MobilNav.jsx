@@ -10,7 +10,7 @@ const MobileNav = () => {
     },
     {
       nombrelink: "Servicios",
-      ruta: "/servicios",
+      ruta: "/#servicios",
 
     },
     {
@@ -20,7 +20,7 @@ const MobileNav = () => {
     },
     {
       nombrelink: "Portafolio",
-      ruta: "/portafolio",
+      ruta: "/pproyectos",
 
     },
     {
@@ -82,7 +82,7 @@ const MobileNav = () => {
       </div>
       {nav && (   
          
-          <nav className='absolute top-20 z-10 container flex flex-col justify-center gap-2 bg-gray-700/90'>
+          <nav className='absolute top-20 z-100 container flex flex-col justify-center gap-2 bg-gray-700/90'>
             {links.map((link, index) => {
               return (
                 <a

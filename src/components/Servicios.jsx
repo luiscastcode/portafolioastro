@@ -3,7 +3,7 @@ import React from 'react';
 
 const SERVICES = [
   {
-    title: 'Diseño Web',
+    title: 'Diseño y Desarrolo Web',
     description: 'Páginas web con buen gusto, diseños modernos y adaptados a tu marca.',
     icon: (
       <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -21,8 +21,8 @@ const SERVICES = [
     )
   },
   {
-    title: 'Optimización SEO',
-    description: 'Posicionamiento orgánico para que tu negocio aparezca en los primeros resultados.',
+    title: 'Desarrollo Apps',
+    description: 'Desarrollo de aplicaciones móviles para Android.',
     icon: (
       <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path>

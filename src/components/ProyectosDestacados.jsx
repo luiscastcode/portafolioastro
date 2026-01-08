@@ -23,11 +23,12 @@ const PROJECTS_DATA = [
   },
   {
     id: '3',
-    title: 'Gotoca Imports',
-    description: 'Ecommerce para la empresa importadora de repuestos para camiones Mack.',
-    image: '/img/proyectos/gotoca.jpg',
-    tags: ['Wordpress', 'WooCommerce'],
-    status: 'INACTIVO'
+    title: 'Fencingven App',
+    description: 'Aplicación móvil para la Federación venezolana de Esgrima.',
+    image: '/img/proyectos/bannerfa.webp',
+    tags: ['Android', 'React Native'],
+    status: 'DESCARGAR',
+    url: 'https://play.google.com/store/apps/details?id=com.fencingven.fencingvenapp&pcampaignid=web_share'
   },
   {
     id: '4',
@@ -49,11 +50,12 @@ const PROJECTS_DATA = [
   },
   {
     id: '6',
-    title: 'Bodegón Diesel',
-    description: 'Tienda retail para venta de repuestos para camiones diesel.',
-    image: '/img/proyectos/bd.jpg',
-    tags: ['Wordpress', 'Elementor'],
-    status: 'INACTIVO'
+    title: 'Internet Zone',
+    description: 'Buscador de empresas de internet y fibra optica en Venezuela.',
+    image: '/img/proyectos/intzone.png',
+    tags: ['Astro JS', 'React JS'],
+    status: 'VISITAR',
+    url: 'https://internetzone.vercel.app/'
   }
 ];
 
@@ -80,12 +82,12 @@ const ProjectCard = ({ project }) => {
 
         <button
           className={`w-full py-3 rounded-lg font-semibold text-sm transition-all ${project.status === 'VISITAR' ? 'bg-blue-600 hover:bg-blue-700 text-white' :
-              project.status === 'COMPRAR' ? 'bg-green-600 hover:bg-green-700 text-white' :
+              project.status === 'COMPRAR' ? 'bg-red-600 hover:bg-red-700 text-white' : project.status === 'DESCARGAR' ? 'bg-green-600 hover:bg-green-700 text-white' :
                 'bg-white/10 text-gray-400 cursor-not-allowed'
             }`}
           disabled={project.status === 'INACTIVO'}
         >
-          <a href={project.status === 'VISITAR' || project.status === 'COMPRAR' ? project.url : '#'} target="_blank" rel="noopener noreferrer">{project.status === 'INACTIVO' ? 'INACTIVO' : project.status}</a>
+          <a href={project.status === 'VISITAR' || project.status === 'COMPRAR' || project.status === 'DESCARGAR' ? project.url : '#'} target="_blank" rel="noopener noreferrer">{project.status === 'INACTIVO' ? 'INACTIVO' : project.status}</a>
         </button>
       </div>
     </div>
