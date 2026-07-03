@@ -1,6 +1,5 @@
 ---
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro'; 
 import '../styles/global.css';
 import ChatAgent from '../components/ChatAgent.jsx';
 import Navbar from '../components/Navbar.astro';
@@ -72,7 +71,7 @@ const {metatitulo, metadescrip, ruta, structuredData} = Astro.props;
     </script>
 		<!-- Structured Data -->
     {structuredData && (
-      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     )}
 	</head>
 	<body>
