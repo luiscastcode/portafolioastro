@@ -9,10 +9,11 @@ interface Props {
   metatitulo: string;
   metadescrip: string;
   ruta: string;
+  structuredData?: any;
   
 }
 
-const {metatitulo, metadescrip, ruta} = Astro.props;
+const {metatitulo, metadescrip, ruta, structuredData} = Astro.props;
 ---
 
 <html lang="es">
@@ -69,7 +70,10 @@ const {metatitulo, metadescrip, ruta} = Astro.props;
 
       gtag("config", "G-X9SCDHRN05");
     </script>
-		
+		<!-- Structured Data -->
+    {structuredData && (
+      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    )}
 	</head>
 	<body>
     <Navbar />    

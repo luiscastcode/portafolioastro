@@ -5,10 +5,9 @@ import PostCard from "../../components/PostCard.astro";
 import Heading from "../../components/Heading.astro";
 import Pagination from "../../components/Pagination.astro";
 import Breadcrumb from "../../components/Breadcrumb.astro";
-import Newsletter from "../../components/Newsletter.astro";
 import BannerCotosen from "../../components/BannerCotosen.astro";
 
-// Interfaz para los posts (DEFINIDA ANTES DE getStaticPaths)
+// Interfaz para los posts
 interface Post {
   frontmatter: {
     posttitle: string;
@@ -24,8 +23,32 @@ interface Post {
   url: string;
 }
 
-// Generar rutas estáticas con paginación (SOLO UNA VEZ)
-export async function getStaticPaths({ paginate }) {
+// Interfaz para el objeto de paginación
+interface PaginationResult {
+  currentPage: number;
+  totalPages: number;
+  totalResults: number;
+  data: Post[];
+  url: {
+    prev: string | null;
+    next: string | null;
+  };
+}
+
+// Interfaz para la función paginate
+interface PaginateFunction {
+  (data: any[], options: { pageSize: number; params?: { page: number } }): PaginationResult[];
+}
+
+// Función para ordenar posts por fecha (más reciente primero)
+function sortPostsByDate(a: any, b: any) {
+  const dateA = new Date(a.frontmatter?.pubDate || 0).getTime();
+  const dateB = new Date(b.frontmatter?.pubDate || 0).getTime();
+  return dateB - dateA;
+}
+
+// Generar rutas estáticas con paginación
+export async function getStaticPaths({ paginate }: { paginate: PaginateFunction }) {
   // Obtener todos los posts del directorio actual
   const allPosts = Object.values(import.meta.glob("./*.md", { eager: true }));
   
@@ -33,18 +56,13 @@ export async function getStaticPaths({ paginate }) {
   const validPosts = allPosts.filter((post: any) => post.frontmatter);
   
   // Ordenar por fecha (más reciente primero)
-  validPosts.sort((a: any, b: any) => {
-    const dateA = new Date(a.frontmatter?.pubDate || 0).getTime();
-    const dateB = new Date(b.frontmatter?.pubDate || 0).getTime();
-    return dateB - dateA; // Más reciente primero
-  });
+  validPosts.sort(sortPostsByDate);
   
   // Formatear posts para tener datos consistentes
   const formattedPosts = validPosts.map((post: any) => ({
     ...post,
     frontmatter: {
       ...post.frontmatter,
-      // Asegurar que tenemos todos los campos necesarios
       image: post.frontmatter.image || {
         src: '/images/default-blog.jpg',
         alt: post.frontmatter.posttitle || 'Post image'
@@ -55,18 +73,17 @@ export async function getStaticPaths({ paginate }) {
   // Paginación: 9 posts por página
   return paginate(formattedPosts, {
     pageSize: 9,
-    // Personalizar la URL para la primera página
     params: { page: 1 }
   });
 }
 
 // Props recibidas de la paginación
-const { page } = Astro.props;
+const { page } = Astro.props as { page: PaginationResult };
 
-// Datos de la página actual
-const currentPage = page.currentPage;
-const totalPages = page.totalPages;
-const posts = page.data;
+// Datos de la página actual (con valores por defecto para evitar errores)
+const currentPage = page?.currentPage || 1;
+const totalPages = page?.totalPages || 1;
+const posts = page?.data || [];
 
 // Variables para SEO
 const pageTitle = currentPage === 1 
@@ -87,26 +104,23 @@ const pageDescription = currentPage === 1
     "@type": "CollectionPage",
     "name": pageTitle,
     "description": pageDescription,
-    "url": `https://tudominio.com/blog/${currentPage > 1 ? `page/${currentPage}` : ''}`,
+    "url": `https://lcastcode.vercel.app/blog/${currentPage > 1 ? `page/${currentPage}` : ''}`,
     "numberOfItems": posts.length,
     "isPartOf": {
       "@type": "Blog",
       "name": "Blog",
-      "url": "https://tudominio.com/blog/"
+      "url": "https://lcastcode.vercel.app/blog/"
     }
   }}
 >
   <!-- Breadcrumb -->
-  
- <Breadcrumb 
+  <Breadcrumb 
     items={[
       { label: "Inicio", url: "/" },
       { label: "Blog", url: "/blog" },
       ...(currentPage > 1 ? [{ label: `Página ${currentPage}`, url: `/blog/page/${currentPage}` }] : [])
     ]}
   />
-  
- 
 
   <!-- Encabezado -->
   <Heading
@@ -117,7 +131,7 @@ const pageDescription = currentPage === 1
   <!-- Contador de resultados -->
   <div class="container mx-auto px-4 mt-4">
     <p class="text-sm text-gray-500">
-      Mostrando <span class="font-semibold text-gray-700">{posts.length}</span> de <span class="font-semibold text-gray-700">{page.totalResults}</span> publicaciones
+      Mostrando <span class="font-semibold text-gray-700">{posts.length}</span> de <span class="font-semibold text-gray-700">{page?.totalResults || posts.length}</span> publicaciones
       {currentPage > 1 && ` - Página ${currentPage} de ${totalPages}`}
     </p>
   </div>
@@ -128,7 +142,7 @@ const pageDescription = currentPage === 1
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post: Post) => (
           <article 
-            key={post.frontmatter.ruta || post.url}
+           
             class="flex h-full transition-all duration-300 hover:-translate-y-1"
           >
             <PostCard post={post} />
@@ -136,7 +150,6 @@ const pageDescription = currentPage === 1
         ))}
       </div>
     ) : (
-      // Mensaje cuando no hay posts
       <div class="text-center py-16">
         <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -146,15 +159,15 @@ const pageDescription = currentPage === 1
       </div>
     )}
 
-    <!-- Paginación mejorada -->
+    <!-- Paginación -->
     {totalPages > 1 && (
       <div class="mt-12">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           baseUrl="/blog"
-          prevUrl={page.url.prev}
-          nextUrl={page.url.next}
+          prevUrl={page?.url?.prev || null}
+          nextUrl={page?.url?.next || null}
           showNumbers={true}
           maxVisible={5}
         />
@@ -165,14 +178,14 @@ const pageDescription = currentPage === 1
   <!-- Sección de Newsletter -->
   <section class="container mx-auto px-4 py-12 mt-8">
     <BannerCotosen
-    variant="featured"
-    background="purple"
-    title="¿Quieres ver los proyectos?"
-    description="Con saber como se hacen los proyectos, puedes aprender a hacerlos tu mismo."
-    buttonText="Miralos aquí"
-    buttonUrl="/proyectos"
-    showDecoration={true}
-  />
+      variant="featured"
+      background="purple"
+      title="¿Quieres ver los proyectos?"
+      description="Con saber como se hacen los proyectos, puedes aprender a hacerlos tu mismo."
+      buttonText="Miralos aquí"
+      buttonUrl="/proyectos"
+      showDecoration={true}
+    />
   </section>
 </Layout>
 

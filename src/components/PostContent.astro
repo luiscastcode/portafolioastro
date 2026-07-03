@@ -1,4 +1,4 @@
- ---
+---
 // src/components/PostContent.astro
 import type { MarkdownHeading } from "astro";
 
@@ -27,6 +27,10 @@ const generateId = (text: string) => {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 };
+
+// El parámetro ruta se usa para identificar el post, pero no se usa directamente en el template
+// Por eso se mantiene pero con un guión bajo para indicar que es intencional
+const _ruta = ruta; // Esto elimina el warning
 ---
 
 <div class="post-content-wrapper">
@@ -59,11 +63,12 @@ const generateId = (text: string) => {
           <h2>Tabla de Contenidos</h2>
         </div>
         <ul class="toc-list">
-          {tocItems.map((heading) => {
+          {tocItems.map((heading, index) => {
             const id = heading.slug || generateId(heading.text);
+            // En Astro, no usamos 'key' en los elementos HTML
+            // Usamos el atributo 'id' o simplemente no pasamos key
             return (
               <li 
-                key={id}
                 class={`toc-item depth-${heading.depth}`}
               >
                 <a href={`#${id}`} class="toc-link">
@@ -116,23 +121,29 @@ const generateId = (text: string) => {
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     // Botones de compartir
-    const shareButtons = document.querySelectorAll('[data-share]');
+    const shareButtons = document.querySelectorAll<HTMLElement>('[data-share]');
     const currentUrl = window.location.href;
     const postTitle = document.querySelector('h1')?.textContent || 'Artículo';
     
-    const shareConfigs = {
-      twitter: (url, title) => 
+    const shareConfigs: {
+      twitter: (url: string, title: string) => string;
+      linkedin: (url: string) => string;
+      whatsapp: (url: string, title: string) => string;
+    } = {
+      twitter: (url: string, title: string): string => 
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
-      linkedin: (url) => 
+      linkedin: (url: string): string => 
         `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-      whatsapp: (url, title) => 
+      whatsapp: (url: string, title: string): string => 
         `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`
     };
     
-    shareButtons.forEach(button => {
+    shareButtons.forEach((button) => {
       button.addEventListener('click', () => {
         const platform = button.dataset.share;
-        const shareUrl = shareConfigs[platform](currentUrl, postTitle);
+        if (!platform) return;
+        
+        const shareUrl = shareConfigs[platform as keyof typeof shareConfigs]?.(currentUrl, postTitle);
         if (shareUrl) {
           window.open(shareUrl, '_blank', 'width=600,height=400');
         }
@@ -145,17 +156,20 @@ const generateId = (text: string) => {
     
     if (tocLinks.length > 0 && headings.length > 0) {
       const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const id = entry.target.id;
-            tocLinks.forEach(link => {
-              link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+            tocLinks.forEach((link) => {
+              const href = link.getAttribute('href');
+              if (href) {
+                link.classList.toggle('active', href === `#${id}`);
+              }
             });
           }
         });
       }, { threshold: 0.3 });
 
-      headings.forEach(heading => {
+      headings.forEach((heading) => {
         if (heading.id) {
           observer.observe(heading);
         }

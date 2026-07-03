@@ -8,7 +8,6 @@ const menuItems = [
   { label: 'Proyectos', href: '/proyectos' },
   { label: 'Experiencia', href: '/experiencia' },
   { label: 'Servicios', href: '/#servicios' },
-   
 ];
 
 // Obtener la ruta actual
@@ -21,7 +20,7 @@ const isActive = (href: string) => {
 };
 ---
 
- <nav id="navbar" class="navbar" role="navigation" aria-label="Navegación principal">
+<nav id="navbar" class="navbar" role="navigation" aria-label="Navegación principal">
   <div class="navbar-container">
     <!-- Logo -->
     <a href="/" class="navbar-logo" aria-label="LCastCode - Inicio">
@@ -88,12 +87,12 @@ const isActive = (href: string) => {
     if (toggle && menu) {
       toggle.addEventListener('click', () => {
         const isOpen = menu.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
         document.body.style.overflow = isOpen ? 'hidden' : '';
       });
 
       // Cerrar menú al hacer click en un enlace
-      menu.querySelectorAll('a').forEach(link => {
+      menu.querySelectorAll('a').forEach((link) => {
         link.addEventListener('click', () => {
           menu.classList.remove('open');
           toggle.setAttribute('aria-expanded', 'false');
@@ -103,7 +102,8 @@ const isActive = (href: string) => {
 
       // Cerrar menú al hacer click fuera
       document.addEventListener('click', (e) => {
-        if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        const target = e.target as Node;
+        if (menu && toggle && !menu.contains(target) && !toggle.contains(target)) {
           menu.classList.remove('open');
           toggle.setAttribute('aria-expanded', 'false');
           document.body.style.overflow = '';
@@ -114,11 +114,12 @@ const isActive = (href: string) => {
     // ========================================
     // EFECTO DE SCROLL - ENCOGIMIENTO
     // ========================================
-    let lastScroll = 0;
     let ticking = false;
 
     const handleScroll = () => {
-      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+      if (!navbar) return;
+      
+      const currentScroll = window.scrollY || document.documentElement.scrollTop;
       
       if (currentScroll > 50) {
         navbar.classList.add('scrolled');
@@ -126,7 +127,6 @@ const isActive = (href: string) => {
         navbar.classList.remove('scrolled');
       }
 
-      lastScroll = currentScroll;
       ticking = false;
     };
 

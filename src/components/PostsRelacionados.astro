@@ -102,7 +102,7 @@ const showingCount = postsToShow.length;
     <ul class={variantClasses[variant]}>
       {postsToShow.map((post, index) => (
         <li 
-          key={`${post.frontmatter.ruta}-${index}`}
+           
           class={`related-card ${cardClasses[variant]}`}
           style={{ animationDelay: `${index * 0.08}s` }}
           itemscope 

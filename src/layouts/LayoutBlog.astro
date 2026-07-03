@@ -68,18 +68,7 @@ const postsRelacionados = allPosts
 <Layout
   metatitulo={frontmatter.metatitulo}
   metadescrip={frontmatter.metadescrip}
-  ruta={frontmatter.ruta}
-  structuredData={{
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: frontmatter.posttitle,
-    author: {
-      "@type": "Person",
-      name: frontmatter.autor,
-    },
-    datePublished: frontmatter.pubDate,
-    image: frontmatter.image.src,
-  }}
+  ruta={frontmatter.ruta}   
 >
   <!-- Breadcrumb -->
   <nav
