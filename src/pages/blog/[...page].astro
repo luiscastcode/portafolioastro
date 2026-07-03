@@ -23,67 +23,59 @@ interface Post {
   url: string;
 }
 
-// Interfaz para el objeto de paginación
-interface PaginationResult {
+// Interfaz para la paginación
+interface PageData {
+  data: Post[];
   currentPage: number;
   totalPages: number;
   totalResults: number;
-  data: Post[];
   url: {
     prev: string | null;
     next: string | null;
   };
 }
 
-// Función para ordenar posts por fecha (más reciente primero)
-function sortPostsByDate(a: any, b: any) {
-  const dateA = new Date(a.frontmatter?.pubDate || 0).getTime();
-  const dateB = new Date(b.frontmatter?.pubDate || 0).getTime();
-  return dateB - dateA;
-}
-
 // Generar rutas estáticas con paginación
 export async function getStaticPaths({ paginate }: any) {
-  try {
-    // Obtener todos los posts del directorio actual
-    const allPosts = Object.values(import.meta.glob("./*.md", { eager: true }));
-    
-    // Filtrar posts válidos (con frontmatter)
-    const validPosts = allPosts.filter((post: any) => post.frontmatter);
-    
-    // Si no hay posts, devolver un array vacío
-    if (validPosts.length === 0) {
-      return [];
-    }
-    
-    // Ordenar por fecha (más reciente primero)
-    validPosts.sort(sortPostsByDate);
-    
-    // Formatear posts para tener datos consistentes
-    const formattedPosts = validPosts.map((post: any) => ({
-      ...post,
-      frontmatter: {
-        ...post.frontmatter,
-        ruta: post.frontmatter?.ruta || post.slug || '',
-        image: post.frontmatter?.image || {
-          src: '/images/default-blog.jpg',
-          alt: post.frontmatter?.posttitle || 'Post image'
-        }
-      }
-    }));
-
-    // Paginación: 9 posts por página
-    return paginate(formattedPosts, {
-      pageSize: 9,
-    });
-  } catch (error) {
-    console.error('Error en getStaticPaths:', error);
+  // Obtener todos los posts del directorio actual
+  const allPosts = Object.values(import.meta.glob("./*.md", { eager: true }));
+  
+  // Filtrar posts válidos (con frontmatter)
+  const validPosts = allPosts.filter((post: any) => post.frontmatter);
+  
+  // Si no hay posts, devolver un array vacío
+  if (validPosts.length === 0) {
     return [];
   }
+  
+  // Ordenar por fecha (más reciente primero) - Función inline para evitar errores
+  validPosts.sort((a: any, b: any) => {
+    const dateA = new Date(a.frontmatter?.pubDate || 0).getTime();
+    const dateB = new Date(b.frontmatter?.pubDate || 0).getTime();
+    return dateB - dateA;
+  });
+  
+  // Formatear posts para tener datos consistentes
+  const formattedPosts = validPosts.map((post: any) => ({
+    ...post,
+    frontmatter: {
+      ...post.frontmatter,
+      ruta: post.frontmatter?.ruta || post.slug || '',
+      image: post.frontmatter?.image || {
+        src: '/images/default-blog.jpg',
+        alt: post.frontmatter?.posttitle || 'Post image'
+      }
+    }
+  }));
+
+  // Paginación: 9 posts por página
+  return paginate(formattedPosts, {
+    pageSize: 9,
+  });
 }
 
 // Props recibidas de la paginación
-const { page } = Astro.props as { page: PaginationResult };
+const { page } = Astro.props as { page: PageData };
 
 // Datos de la página actual (con valores por defecto para evitar errores)
 const currentPage = page?.currentPage || 1;
@@ -132,7 +124,7 @@ const pageDescription = currentPage === 1
   <div class="container mx-auto px-4 py-6">
     {posts.length > 0 ? (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts.map((post: Post, index: number) => (
+        {posts.map((post: Post) => (
           <article 
             
             class="flex h-full transition-all duration-300 hover:-translate-y-1"
@@ -167,7 +159,7 @@ const pageDescription = currentPage === 1
     )}
   </div>
 
-  <!-- Sección de Newsletter -->
+ 
   <section class="container mx-auto px-4 py-12 mt-8">
     <BannerCotosen
       variant="featured"
