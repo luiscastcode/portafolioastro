@@ -1,0 +1,222 @@
+---
+// src/pages/blog/[...page].astro
+import Layout from "../../layouts/Layout.astro";
+import PostCard from "../../components/PostCard.astro";
+import Heading from "../../components/Heading.astro";
+import Pagination from "../../components/Pagination.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import Newsletter from "../../components/Newsletter.astro";
+import BannerCotosen from "../../components/BannerCotosen.astro";
+
+// Interfaz para los posts (DEFINIDA ANTES DE getStaticPaths)
+interface Post {
+  frontmatter: {
+    posttitle: string;
+    ruta: string;
+    pubDate: string;
+    autor: string;
+    image?: {
+      src: string;
+      alt: string;
+    };
+    excerpt?: string;
+  };
+  url: string;
+}
+
+// Generar rutas estáticas con paginación (SOLO UNA VEZ)
+export async function getStaticPaths({ paginate }) {
+  // Obtener todos los posts del directorio actual
+  const allPosts = Object.values(import.meta.glob("./*.md", { eager: true }));
+  
+  // Filtrar posts válidos (con frontmatter)
+  const validPosts = allPosts.filter((post: any) => post.frontmatter);
+  
+  // Ordenar por fecha (más reciente primero)
+  validPosts.sort((a: any, b: any) => {
+    const dateA = new Date(a.frontmatter?.pubDate || 0).getTime();
+    const dateB = new Date(b.frontmatter?.pubDate || 0).getTime();
+    return dateB - dateA; // Más reciente primero
+  });
+  
+  // Formatear posts para tener datos consistentes
+  const formattedPosts = validPosts.map((post: any) => ({
+    ...post,
+    frontmatter: {
+      ...post.frontmatter,
+      // Asegurar que tenemos todos los campos necesarios
+      image: post.frontmatter.image || {
+        src: '/images/default-blog.jpg',
+        alt: post.frontmatter.posttitle || 'Post image'
+      }
+    }
+  }));
+
+  // Paginación: 9 posts por página
+  return paginate(formattedPosts, {
+    pageSize: 9,
+    // Personalizar la URL para la primera página
+    params: { page: 1 }
+  });
+}
+
+// Props recibidas de la paginación
+const { page } = Astro.props;
+
+// Datos de la página actual
+const currentPage = page.currentPage;
+const totalPages = page.totalPages;
+const posts = page.data;
+
+// Variables para SEO
+const pageTitle = currentPage === 1 
+  ? "Blog - Artículos y Tutoriales para aprovechar al máximo tu internet"
+  : `Blog - Página ${currentPage}`;
+
+const pageDescription = currentPage === 1
+  ? "Explora nuestro blog con artículos, guías y tutoriales para aprovechar al máximo tu internet"
+  : `Explora nuestro blog - Página ${currentPage} de ${totalPages}`;
+---
+
+<Layout
+  metatitulo={pageTitle}
+  metadescrip={pageDescription}
+  ruta={`blog/${currentPage > 1 ? `page/${currentPage}` : ''}`}
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": pageTitle,
+    "description": pageDescription,
+    "url": `https://tudominio.com/blog/${currentPage > 1 ? `page/${currentPage}` : ''}`,
+    "numberOfItems": posts.length,
+    "isPartOf": {
+      "@type": "Blog",
+      "name": "Blog",
+      "url": "https://tudominio.com/blog/"
+    }
+  }}
+>
+  <!-- Breadcrumb -->
+  
+ <Breadcrumb 
+    items={[
+      { label: "Inicio", url: "/" },
+      { label: "Blog", url: "/blog" },
+      ...(currentPage > 1 ? [{ label: `Página ${currentPage}`, url: `/blog/page/${currentPage}` }] : [])
+    ]}
+  />
+  
+ 
+
+  <!-- Encabezado -->
+  <Heading
+    tituloencabezado="Blog"
+    subtitulo="Artículos, Guías y Tutoriales para aprovechar al máximo tu internet"
+  />
+
+  <!-- Contador de resultados -->
+  <div class="container mx-auto px-4 mt-4">
+    <p class="text-sm text-gray-500">
+      Mostrando <span class="font-semibold text-gray-700">{posts.length}</span> de <span class="font-semibold text-gray-700">{page.totalResults}</span> publicaciones
+      {currentPage > 1 && ` - Página ${currentPage} de ${totalPages}`}
+    </p>
+  </div>
+
+  <!-- Grid de Posts -->
+  <div class="container mx-auto px-4 py-6">
+    {posts.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.map((post: Post) => (
+          <article 
+            key={post.frontmatter.ruta || post.url}
+            class="flex h-full transition-all duration-300 hover:-translate-y-1"
+          >
+            <PostCard post={post} />
+          </article>
+        ))}
+      </div>
+    ) : (
+      // Mensaje cuando no hay posts
+      <div class="text-center py-16">
+        <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <h3 class="mt-4 text-lg font-semibold text-gray-900">No hay publicaciones disponibles</h3>
+        <p class="mt-1 text-gray-500">Pronto agregaremos nuevo contenido.</p>
+      </div>
+    )}
+
+    <!-- Paginación mejorada -->
+    {totalPages > 1 && (
+      <div class="mt-12">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          baseUrl="/blog"
+          prevUrl={page.url.prev}
+          nextUrl={page.url.next}
+          showNumbers={true}
+          maxVisible={5}
+        />
+      </div>
+    )}
+  </div>
+
+  <!-- Sección de Newsletter -->
+  <section class="container mx-auto px-4 py-12 mt-8">
+    <BannerCotosen
+    variant="featured"
+    background="purple"
+    title="¿Quieres ver los proyectos?"
+    description="Con saber como se hacen los proyectos, puedes aprender a hacerlos tu mismo."
+    buttonText="Miralos aquí"
+    buttonUrl="/proyectos"
+    showDecoration={true}
+  />
+  </section>
+</Layout>
+
+<style is:global>
+  /* Estilos para la animación de entrada de los posts */
+  .grid > article {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  /* Delay escalonado para cada post */
+  .grid > article:nth-child(1) { animation-delay: 0.05s; }
+  .grid > article:nth-child(2) { animation-delay: 0.1s; }
+  .grid > article:nth-child(3) { animation-delay: 0.15s; }
+  .grid > article:nth-child(4) { animation-delay: 0.2s; }
+  .grid > article:nth-child(5) { animation-delay: 0.25s; }
+  .grid > article:nth-child(6) { animation-delay: 0.3s; }
+  .grid > article:nth-child(7) { animation-delay: 0.35s; }
+  .grid > article:nth-child(8) { animation-delay: 0.4s; }
+  .grid > article:nth-child(9) { animation-delay: 0.45s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mejora de accesibilidad para animaciones */
+  @media (prefers-reduced-motion: reduce) {
+    .grid > article {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  /* Estilos responsive para el grid */
+  @media (max-width: 768px) {
+    .grid {
+      gap: 1rem;
+    }
+  }
+</style>

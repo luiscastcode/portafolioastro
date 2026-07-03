@@ -14,6 +14,11 @@ const links = [
 
   },
   {
+    nombrelink: "Blog",
+    ruta: "/blog",
+
+  },
+  {
     nombrelink: "Proyectos",
     ruta: "/proyectos",
 

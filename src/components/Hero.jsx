@@ -12,20 +12,20 @@ const Hero = () => {
           Disponible para nuevos proyectos ✨
         </div>
         
-        <h1 className="text-4xl md:text-8xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-linear-to-b from-white to-gray-500">
+        <h1 className="text-2xl md:text-8xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-linear-to-b from-white to-gray-500">
           Desarrollo y Diseño Web <br className="hidden md:block" />
           Para Emprendimientos
         </h1>
         
-        <p className="max-w-2xl mx-auto text-lg md:text-xl text-gray-400 mb-10">
+        <p className="max-w-2xl mx-auto text-xs md:text-xl text-gray-400 mb-10">
           Desarrollo soluciones webs para emprendimientos que desean llevar su empresa a otro nivel con tecnología de vanguardia y diseño de clase mundial.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#proyectos" className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2">
+          <a href="#proyectos" className="px-4 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2">
             Ver Proyectos
           </a>
-          <a href="#servicios" className="px-8 py-4 bg-amber-300 border border-white/10 text-gray-900 font-semibold rounded-lg hover:bg-white/10 transition-all">
+          <a href="#servicios" className="px-4 py-2 bg-amber-300 border border-white/10 text-gray-900 font-semibold rounded-lg hover:bg-white/10 transition-all">
             Nuestros Servicios
           </a>
         </div>

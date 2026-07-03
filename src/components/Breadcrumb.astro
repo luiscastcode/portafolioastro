@@ -1,0 +1,77 @@
+---
+// src/components/Breadcrumb.astro
+export interface BreadcrumbItem {
+  label: string;
+  url: string;
+  current?: boolean;
+}
+
+export interface Props {
+  items: BreadcrumbItem[];
+  separator?: string;
+  showHome?: boolean;
+}
+
+const { items, separator = "/", showHome = true } = Astro.props;
+
+// Asegurar que el último item sea el actual
+const breadcrumbItems = items.map((item, index) => ({
+  ...item,
+  current: index === items.length - 1,
+}));
+
+// Si showHome es true y no hay item de inicio, agregarlo
+const finalItems =
+  showHome && !items.some((item) => item.label.toLowerCase() === "inicio")
+    ? [{ label: "Inicio", url: "/" }, ...breadcrumbItems]
+    : breadcrumbItems;
+---
+
+<div class="container mx-auto px-4 mt-20 bg-gray-50 border-b border-gray-200">
+  {
+    finalItems.length > 0 && (
+      <nav
+        class=" w-full md:w-5xl mx-auto px-4 py-3 bg-gray-50 border-b border-gray-200"
+        aria-label="Breadcrumb"
+      >
+        <ol class="flex flex-wrap items-center text-sm">
+          {finalItems.map((item, index) => (
+            <li
+              key={`${item.url}-${index}`}
+              class="flex items-center"
+              itemscope
+              itemtype="https://schema.org/ListItem"
+            >
+              {index > 0 && (
+                <span class="mx-2 text-gray-400" aria-hidden="true">
+                  {separator}
+                </span>
+              )}
+
+              {item.current ? (
+                <span
+                  class="font-semibold text-gray-900"
+                  aria-current="page"
+                  itemprop="name"
+                >
+                  {item.label}
+                </span>
+              ) : (
+                <a
+                  href={item.url}
+                  class="text-gray-600 hover:text-blue-600 transition-colors"
+                  itemprop="item"
+                >
+                  <span itemprop="name">{item.label}</span>
+                </a>
+              )}
+
+              {/* Meta item para Schema.org */}
+              <meta itemprop="position" content={String(index + 1)} />
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
+</div>

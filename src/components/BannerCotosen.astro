@@ -1,0 +1,253 @@
+---
+// src/components/BannerCotosen.astro
+
+export interface Props {
+  variant?: 'default' | 'compact' | 'featured';
+  image?: {
+    src: string;
+    alt: string;
+    width?: number;
+    height?: number;
+  };
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+  background?: 'blue' | 'purple' | 'amber' | 'gray';
+  showDecoration?: boolean;
+}
+
+const {
+  variant = 'default',
+  image,
+  title = '¿Necesitas ayuda con tu internet?',
+  description = 'Contáctanos y te ayudamos a resolver cualquier problema con tu conexión.',
+  buttonText = 'Contactar ahora',
+  buttonUrl = '/contacto',
+  background = 'blue',
+  showDecoration = true
+} = Astro.props;
+
+// Colores de fondo según la variante
+const backgroundColors = {
+  blue: 'from-blue-500 to-blue-600',
+  purple: 'from-purple-500 to-indigo-600',
+  amber: 'from-amber-500 to-orange-600',
+  gray: 'from-gray-600 to-gray-700'   
+};
+
+// Clases según variante
+const variantClasses = {
+  default: {
+    container: 'p-5',
+    title: 'text-lg font-bold',
+    description: 'text-sm',
+    button: 'px-4 py-2 text-sm'
+  },
+  compact: {
+    container: 'p-3',
+    title: 'text-sm font-semibold',
+    description: 'text-xs',
+    button: 'px-3 py-1.5 text-xs'
+  },
+  featured: {
+    container: 'p-6',
+    title: 'text-xl font-bold',
+    description: 'text-base',
+    button: 'px-5 py-2.5 text-sm'
+  }
+};
+---
+
+<div class="banner-cotosen">
+  <!-- Variante con imagen -->
+  {image ? (
+    <div class={`banner-image ${variantClasses[variant].container}`}>
+      <img 
+        src={image.src} 
+        alt={image.alt || title}
+        width={image.width || 300}
+        height={image.height || 200}
+        loading="lazy"
+        decoding="async"
+        class="w-full h-auto rounded-lg object-cover"
+      />
+      {title && (
+        <div class="banner-overlay">
+          <h4 class="text-white font-bold text-center">{title}</h4>
+        </div>
+      )}
+    </div>
+  ) : (
+    <!-- Variante sin imagen (con gradiente) -->
+    <div class={`banner-gradient bg-linear-to-br ${backgroundColors[background]} rounded-lg shadow-md ${variantClasses[variant].container} relative overflow-hidden`}>
+      {/* Decoración de fondo */}
+      {showDecoration && (
+        <>
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+          <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
+        </>
+      )}
+
+      {/* Contenido */}
+      <div class="relative z-10">
+        {/* Icono decorativo */}
+        <div class="flex items-center justify-center mb-3">
+          <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Título -->
+        {title && (
+          <h4 class={`${variantClasses[variant].title} text-white text-center mb-2`}>
+            {title}
+          </h4>
+        )}
+
+        <!-- Descripción -->
+        {description && (
+          <p class={`${variantClasses[variant].description} text-white/90 text-center mb-4 leading-relaxed`}>
+            {description}
+          </p>
+        )}
+
+        <!-- Botón -->
+        {buttonText && buttonUrl && (
+          <div class="text-center">
+            <a
+              href={buttonUrl}
+              class={`inline-block ${variantClasses[variant].button} bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg`}
+            >
+              {buttonText}
+              <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  )}
+
+  {/* Variante featured con borde decorativo */}
+  {variant === 'featured' && !image && (
+    <div class="absolute inset-0 border-2 border-white/20 rounded-lg pointer-events-none"></div>
+  )}
+</div>
+
+<style>
+  /* ========================================
+     BANNER COTOSEN
+     ======================================== */
+  .banner-cotosen {
+    position: relative;
+    width: 100%;
+  }
+
+  /* ========================================
+     VARIANTE CON IMAGEN
+     ======================================== */
+  .banner-image {
+    position: relative;
+    background: #f1f5f9;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .banner-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s ease;
+  }
+
+  .banner-image:hover img {
+    transform: scale(1.03);
+  }
+
+  .banner-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 1rem 1rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  }
+
+  .banner-overlay h4 {
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  /* ========================================
+     VARIANTE CON GRADIENTE
+     ======================================== */
+  .banner-gradient {
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .banner-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* ========================================
+     RESPONSIVE
+     ======================================== */
+  @media (max-width: 768px) {
+    .banner-image {
+      border-radius: 0.5rem;
+    }
+
+    .banner-overlay h4 {
+      font-size: 0.95rem;
+    }
+
+    .banner-gradient {
+      border-radius: 0.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .banner-overlay {
+      padding: 1rem 0.75rem 0.75rem;
+    }
+
+    .banner-overlay h4 {
+      font-size: 0.85rem;
+    }
+
+    .banner-gradient .w-12.h-12 {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .banner-gradient .w-6.h-6 {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+
+  /* ========================================
+     PREFERENCIAS DE MOVIMIENTO REDUCIDO
+     ======================================== */
+  @media (prefers-reduced-motion: reduce) {
+    .banner-image img {
+      transition: none;
+    }
+    .banner-image:hover img {
+      transform: none;
+    }
+    .banner-gradient:hover {
+      transform: none;
+    }
+    .banner-gradient a:hover {
+      transform: none !important;
+    }
+  }
+</style>

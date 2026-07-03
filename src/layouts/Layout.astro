@@ -3,6 +3,7 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import '../styles/global.css';
 import ChatAgent from '../components/ChatAgent.jsx';
+import Navbar from '../components/Navbar.astro';
 
 interface Props {
   metatitulo: string;
@@ -71,7 +72,7 @@ const {metatitulo, metadescrip, ruta} = Astro.props;
 		
 	</head>
 	<body>
-    <Header />
+    <Navbar />    
 		<slot/>
     <Footer />
 		<ChatAgent client:load />

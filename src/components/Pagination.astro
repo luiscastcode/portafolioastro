@@ -1,0 +1,187 @@
+---
+// src/components/Pagination.astro
+export interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+  prevUrl?: string | null;
+  nextUrl?: string | null;
+  showNumbers?: boolean;
+  maxVisible?: number;
+}
+
+const {
+  currentPage,
+  totalPages,
+  baseUrl = "/blog",
+  prevUrl,
+  nextUrl,
+  showNumbers = true,
+  maxVisible = 5,
+} = Astro.props;
+
+// Generar array de páginas para mostrar
+const getPageNumbers = () => {
+  const pages: number[] = [];
+  
+  if (totalPages <= maxVisible) {
+    // Mostrar todas las páginas si son pocas
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+  } else {
+    // Mostrar páginas con elipses
+    const halfVisible = Math.floor(maxVisible / 2);
+    let start = Math.max(1, currentPage - halfVisible);
+    let end = Math.min(totalPages, currentPage + halfVisible);
+    
+    if (currentPage <= halfVisible + 1) {
+      end = maxVisible;
+    }
+    if (currentPage >= totalPages - halfVisible) {
+      start = totalPages - maxVisible + 1;
+    }
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+  }
+  
+  return pages;
+};
+
+const pageNumbers = getPageNumbers();
+const showFirstEllipsis = currentPage > maxVisible - 1 && currentPage > 1;
+const showLastEllipsis = currentPage < totalPages - maxVisible + 2 && currentPage < totalPages;
+const showFirst = currentPage > maxVisible && !pageNumbers.includes(1);
+const showLast = currentPage < totalPages - maxVisible + 1 && !pageNumbers.includes(totalPages);
+---
+
+<nav 
+  class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-2" 
+  aria-label="Paginación de artículos"
+>
+  <ul class="flex flex-wrap items-center gap-1">
+    <!-- Botón Anterior -->
+    {prevUrl ? (
+      <li>
+        <a
+          href={prevUrl}
+          class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-blue-600 transition-colors"
+          aria-label="Página anterior"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span class="hidden sm:inline">Anterior</span>
+        </a>
+      </li>
+    ) : (
+      <li>
+        <span class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-md cursor-not-allowed">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span class="hidden sm:inline">Anterior</span>
+        </span>
+      </li>
+    )}
+
+    {/* Mostrar números de página */}
+    {showNumbers && (
+      <>
+        {/* Primera página */}
+        {showFirst && (
+          <>
+            <li>
+              <a
+                href={`${baseUrl}`}
+                class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+                aria-label="Ir a la primera página"
+              >
+                1
+              </a>
+            </li>
+            {showFirstEllipsis && (
+              <li>
+                <span class="px-3 py-2 text-sm text-gray-400">…</span>
+              </li>
+            )}
+          </>
+        )}
+
+        {/* Páginas centrales */}
+        {pageNumbers.map((page) => (
+          <li key={page}>
+            {page === currentPage ? (
+              <span
+                class="px-3 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md"
+                aria-current="page"
+              >
+                {page}
+              </span>
+            ) : (
+              <a
+                href={page === 1 ? `${baseUrl}` : `${baseUrl}/page/${page}`}
+                class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+                aria-label={`Ir a la página ${page}`}
+              >
+                {page}
+              </a>
+            )}
+          </li>
+        ))}
+
+        {/* Última página */}
+        {showLast && (
+          <>
+            {showLastEllipsis && (
+              <li>
+                <span class="px-3 py-2 text-sm text-gray-400">…</span>
+              </li>
+            )}
+            <li>
+              <a
+                href={`${baseUrl}/page/${totalPages}`}
+                class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+                aria-label="Ir a la última página"
+              >
+                {totalPages}
+              </a>
+            </li>
+          </>
+        )}
+      </>
+    )}
+
+    <!-- Botón Siguiente -->
+    {nextUrl ? (
+      <li>
+        <a
+          href={nextUrl}
+          class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-blue-600 transition-colors"
+          aria-label="Página siguiente"
+        >
+          <span class="hidden sm:inline">Siguiente</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </li>
+    ) : (
+      <li>
+        <span class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-md cursor-not-allowed">
+          <span class="hidden sm:inline">Siguiente</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </li>
+    )}
+  </ul>
+
+  <!-- Indicador de página actual / total -->
+  <p class="text-sm text-gray-500 sm:ml-4">
+    Página {currentPage} de {totalPages}
+  </p>
+</nav>

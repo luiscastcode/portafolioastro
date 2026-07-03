@@ -1,0 +1,58 @@
+---
+// src/components/Heading.astro
+export interface Props {
+  tituloencabezado: string;
+  subtitulo?: string;
+  align?: 'left' | 'center' | 'right';
+  size?: 'small' | 'medium' | 'large';
+}
+
+const { 
+  tituloencabezado, 
+  subtitulo, 
+  align = 'center',
+  size = 'large'
+} = Astro.props;
+
+// Clases de alineación
+const alignClasses = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right'
+};
+
+// Clases de tamaño
+const sizeClasses = {
+  small: {
+    title: 'text-2xl md:text-3xl',
+    subtitle: 'text-sm'
+  },
+  medium: {
+    title: 'text-3xl md:text-4xl',
+    subtitle: 'text-base'
+  },
+  large: {
+    title: 'text-4xl md:text-5xl lg:text-6xl',
+    subtitle: 'text-lg'
+  }
+};
+---
+
+<header class={`m-8 ${alignClasses[align]}`}>
+  <div class="container mx-auto px-4">
+    <h1 class={`${sizeClasses[size].title} font-extrabold text-gray-100 leading-tight`}>
+      {tituloencabezado}
+    </h1>
+    
+    {subtitulo && (
+      <div class="mt-4">
+        <p class={`${sizeClasses[size].subtitle} text-gray-400 max-w-2xl mx-auto ${align === 'center' ? 'mx-auto' : ''}`}>
+          {subtitulo}
+        </p>
+      </div>
+    )}
+
+    {/* Línea decorativa */}
+    <div class={`mt-4 ${align === 'center' ? 'mx-auto' : ''} w-20 h-1 bg-linear-to-r from-blue-500 to-purple-600 rounded-full`}></div>
+  </div>
+</header>
