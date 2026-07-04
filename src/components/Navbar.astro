@@ -35,6 +35,7 @@ const isActive = (href: string) => {
       class="menu-toggle" 
       aria-label="Abrir menú"
       aria-expanded="false"
+      type="button"
     >
       <span class="menu-icon">
         <span class="menu-line"></span>
@@ -75,50 +76,82 @@ const isActive = (href: string) => {
 </nav>
 
 <script>
-  // Script para el menú móvil y efecto de scroll
-  document.addEventListener('DOMContentLoaded', () => {
+  // ========================================
+  // INICIALIZACIÓN INMEDIATA - Sin esperar DOMContentLoaded
+  // ========================================
+  (function initNavbar() {
     const toggle = document.getElementById('menu-toggle');
     const menu = document.getElementById('nav-menu');
     const navbar = document.getElementById('navbar');
 
+    // Si no existen los elementos, salir
+    if (!toggle || !menu || !navbar) {
+      console.warn('Navbar: Elementos no encontrados');
+      return;
+    }
+
     // ========================================
     // MENÚ MÓVIL
     // ========================================
-    if (toggle && menu) {
-      toggle.addEventListener('click', () => {
-        const isOpen = menu.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', String(isOpen));
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-      });
-
-      // Cerrar menú al hacer click en un enlace
-      menu.querySelectorAll('a').forEach((link) => {
-        link.addEventListener('click', () => {
-          menu.classList.remove('open');
-          toggle.setAttribute('aria-expanded', 'false');
-          document.body.style.overflow = '';
-        });
-      });
-
-      // Cerrar menú al hacer click fuera
-      document.addEventListener('click', (e) => {
-        const target = e.target as Node;
-        if (menu && toggle && !menu.contains(target) && !toggle.contains(target)) {
-          menu.classList.remove('open');
-          toggle.setAttribute('aria-expanded', 'false');
-          document.body.style.overflow = '';
-        }
-      });
+    function toggleMenu() {
+      const isOpen = menu.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+      
+      // Forzar reflow para asegurar que la animación se ejecute
+      if (isOpen) {
+        menu.style.display = 'flex';
+        // Forzar reflow
+        void menu.offsetHeight;
+      } else {
+        setTimeout(() => {
+          if (!menu.classList.contains('open')) {
+            menu.style.display = '';
+          }
+        }, 350);
+      }
     }
+
+    function closeMenu() {
+      menu.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        if (!menu.classList.contains('open')) {
+          menu.style.display = '';
+        }
+      }, 350);
+    }
+
+    // Evento click del toggle
+    toggle.addEventListener('click', toggleMenu);
+
+    // Cerrar menú al hacer click en un enlace
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Cerrar menú al hacer click fuera
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target && !menu.contains(target) && !toggle.contains(target)) {
+        closeMenu();
+      }
+    });
+
+    // Cerrar menú al presionar ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.classList.contains('open')) {
+        closeMenu();
+      }
+    });
 
     // ========================================
     // EFECTO DE SCROLL - ENCOGIMIENTO
     // ========================================
     let ticking = false;
 
-    const handleScroll = () => {
-      if (!navbar) return;
-      
+    function handleScroll() {
       const currentScroll = window.scrollY || document.documentElement.scrollTop;
       
       if (currentScroll > 50) {
@@ -126,9 +159,8 @@ const isActive = (href: string) => {
       } else {
         navbar.classList.remove('scrolled');
       }
-
       ticking = false;
-    };
+    }
 
     window.addEventListener('scroll', () => {
       if (!ticking) {
@@ -142,7 +174,33 @@ const isActive = (href: string) => {
 
     // Ejecutar al cargar para verificar estado inicial
     handleScroll();
-  });
+
+    // ========================================
+    // CORRECCIÓN PARA MÓVIL: Re-evaluar al cambiar de orientación
+    // ========================================
+    if (window.matchMedia) {
+      const mediaQuery = window.matchMedia('(max-width: 768px)');
+      mediaQuery.addListener(() => {
+        if (!mediaQuery.matches) {
+          closeMenu();
+        }
+      });
+    }
+
+    // ========================================
+    // CORRECCIÓN PARA NAVEGADORES MÓVILES
+    // ========================================
+    // En móviles, a veces el menú no se muestra correctamente
+    // Forzamos la visibilidad inicial
+    if (window.innerWidth <= 768) {
+      // Asegurar que el menú esté oculto inicialmente
+      menu.classList.remove('open');
+      menu.style.display = '';
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    console.log('Navbar inicializado correctamente');
+  })();
 </script>
 
 <style>
@@ -236,6 +294,8 @@ const isActive = (href: string) => {
     padding: 8px;
     border-radius: 8px;
     transition: background 0.2s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .menu-toggle:hover {
@@ -436,6 +496,9 @@ const isActive = (href: string) => {
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       overflow-y: auto;
       border-top: 1px solid rgba(251, 191, 36, 0.08);
+      /* Asegurar que el menú esté oculto inicialmente */
+      display: flex !important;
+      pointer-events: none;
     }
 
     .navbar.scrolled .nav-menu {
@@ -446,6 +509,7 @@ const isActive = (href: string) => {
       transform: translateX(0);
       opacity: 1;
       visibility: visible;
+      pointer-events: auto;
     }
 
     .nav-item {
@@ -522,6 +586,25 @@ const isActive = (href: string) => {
     .btn-cta {
       padding: 0.5rem 1rem;
       font-size: 0.8125rem;
+    }
+  }
+
+  /* ========================================
+     RESPONSIVE - MÓVIL PEQUEÑO
+     ======================================== */
+  @media (max-width: 480px) {
+    .nav-menu {
+      padding: 1rem;
+    }
+    
+    .nav-link {
+      padding: 0.75rem 0.5rem;
+      font-size: 1rem;
+    }
+    
+    .btn-cta {
+      padding: 0.625rem;
+      font-size: 0.875rem;
     }
   }
 

@@ -1,9 +1,9 @@
 
-import React from 'react';
+
 
 const Hero = () => {
   return (
-    <section id="home" className="relative pt-8 md:pt-28 pb-20 overflow-hidden min-h-[90vh] flex flex-col justify-center">
+    <section id="home" className="relative pt-20 md:pt-28 pb-20 overflow-hidden min-h-[90vh] flex flex-col justify-center">
       <div className="grid-pattern absolute inset-0 z-0"></div>
       <div className="hero-glow"></div>
       
