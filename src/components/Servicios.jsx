@@ -61,7 +61,7 @@ const SERVICES = [
 
 const Servicios = () => {
   return (
-    <section id="servicios" className="py-24 bg-white/5 relative overflow-hidden">
+    <section id="servicios" className="py-8 md:py-24 bg-white/5 relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Servicios Profesionales</h2>

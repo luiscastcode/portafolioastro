@@ -12,7 +12,7 @@ const EXPERIENCE = [
     period: 'Desde el 2015',
     role: 'Diseñador Web Freelancer',
     description: 'Más de 9 años de experiencia liderando proyectos independientes. Evolucionando desde soluciones en Joomla y Wordpress hacia arquitecturas modernas con React y sus derivados.',
-    url: 'https://luiscastcode.com'
+    url: 'https://lcastcode.vercel.app'
   },
   {
     period: 'Abril 2021 - Marzo 2022',
@@ -26,11 +26,11 @@ const EXPERIENCE = [
  
 const Experiencia = () => {
   return (
-    <section id="about" className="py-24 bg-black relative overflow-hidden">
+    <section id="about" className="py-8 bg-black relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-600/5 blur-[120px] -z-10"></div>
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-1 md:px-6">
         {/* Intro Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-32">
           <div className="order-2 lg:order-1">
@@ -69,7 +69,7 @@ const Experiencia = () => {
                   alt="Luis Castillo"
                   className="  object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
                 />
-                <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-8 bg-linear-to-t from-black to-transparent">
                   <p className="text-white font-bold text-xl">Luis Castillo</p>
                   <p className="text-blue-400 text-sm">Full Stack Developer</p>
                 </div>
@@ -125,11 +125,11 @@ const Experiencia = () => {
 
         {/* CTA Banner based on "Vamos a conversar!" */}
         <div className="mt-40 max-w-5xl mx-auto">
-          <div className="relative p-1 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 rounded-[32px] overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 animate-gradient-xy opacity-50 blur-xl"></div>
-            <div className="relative bg-black rounded-[28px] p-12 md:p-20 text-center">
+          <div className="relative p-1 bg-linear-to-r from-blue-600 via-purple-600 to-blue-600 rounded-[32px] overflow-hidden group">
+            <div className="absolute inset-0 bg-linear-to-r from-blue-600 via-purple-600 to-blue-600 animate-gradient-xy opacity-50 blur-xl"></div>
+            <div className="relative bg-black rounded-[28px] p-6 md:p-20 text-center">
               <h2 className="text-4xl md:text-6xl font-black mb-6">
-                ¡Vamos a <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-yellow-400">conversar!</span>
+                ¡Vamos a <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-400 to-yellow-400">conversar!</span>
               </h2>
               <p className="text-gray-400 text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
                 Si deseas que tu emprendimiento avance al siguiente nivel escríbeme y te mostraré lo que se puede hacer con los recursos adecuados.

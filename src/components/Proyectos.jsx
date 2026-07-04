@@ -102,8 +102,8 @@ const ProjectCard = ({ project }) => {
 
 const Proyectos = () => {
   return (
-    <section id="proyectos" className="py-24 bg-black">
-      <div className="container mx-auto px-6">
+    <section id="proyectos" className="py-2 md:py-24 bg-black">
+      <div className="container mx-auto px-2">
         <div className="mb-16 text-center">
           <h1 className="text-4xl font-bold mb-4">Proyectos finalizados</h1>
           <p className="text-gray-400">100% dedicado a crear proyectos que aportan soluciones reales a mis clientes.</p>

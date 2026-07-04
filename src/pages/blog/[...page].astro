@@ -109,13 +109,13 @@ const pageDescription = currentPage === 1
   <!-- Encabezado -->
   <Heading
     tituloencabezado="Blog"
-    subtitulo="Artículos, Guías y Tutoriales para aprovechar al máximo tu internet"
+    subtitulo="Artículos, Guías y Tutoriales para aprovechar al máximo"
   />
 
   <!-- Contador de resultados -->
   <div class="container mx-auto px-4 mt-4">
     <p class="text-sm text-gray-500">
-      Mostrando <span class="font-semibold text-gray-700">{posts.length}</span> de <span class="font-semibold text-gray-700">{page?.totalResults || posts.length}</span> publicaciones
+      Mostrando <span class="font-semibold text-yellow-200">{posts.length}</span> de <span class="font-semibold text-amber-100">{page?.totalResults || posts.length}</span> publicaciones
       {currentPage > 1 && ` - Página ${currentPage} de ${totalPages}`}
     </p>
   </div>
