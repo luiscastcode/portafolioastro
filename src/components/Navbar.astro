@@ -76,65 +76,52 @@ const isActive = (href: string) => {
 </nav>
 
 <script>
-  // @ts-nocheck - Ignorar errores de TypeScript en este script
-  // ========================================
-  // INICIALIZACIÓN INMEDIATA
-  // ========================================
-  (function initNavbar() {
-    // Obtener elementos
-    const toggle = document.getElementById('menu-toggle');
-    const menu = document.getElementById('nav-menu');
-    const navbar = document.getElementById('navbar');
+  // @ts-nocheck
+  document.addEventListener('DOMContentLoaded', function() {
+    var toggle = document.getElementById('menu-toggle');
+    var menu = document.getElementById('nav-menu');
+    var navbar = document.getElementById('navbar');
 
-    // Si no existen los elementos, salir
+    // Verificar que los elementos existen
     if (!toggle || !menu || !navbar) {
       console.warn('Navbar: Elementos no encontrados');
       return;
     }
 
     // ========================================
-    // MENÚ MÓVIL
+    // FUNCIÓN PARA CERRAR MENÚ
     // ========================================
-    function toggleMenu() {
-      const isOpen = menu.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', String(isOpen));
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-      
-      // Forzar reflow para asegurar que la animación se ejecute
-      if (isOpen) {
-        menu.style.display = 'flex';
-        // Forzar reflow
-        void menu.offsetHeight;
-      } else {
-        setTimeout(function() {
-          if (!menu.classList.contains('open')) {
-            menu.style.display = '';
-          }
-        }, 350);
-      }
-    }
-
     function closeMenu() {
       menu.classList.remove('open');
       toggle.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
-      setTimeout(function() {
-        if (!menu.classList.contains('open')) {
-          menu.style.display = '';
-        }
-      }, 350);
     }
 
-    // Evento click del toggle
+    // ========================================
+    // FUNCIÓN PARA ABRIR/CERRAR MENÚ
+    // ========================================
+    function toggleMenu() {
+      var isOpen = menu.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    // ========================================
+    // EVENTO DE CLICK EN EL TOGGLE
+    // ========================================
     toggle.addEventListener('click', toggleMenu);
 
-    // Cerrar menú al hacer click en un enlace
+    // ========================================
+    // CERRAR MENÚ AL HACER CLICK EN UN ENLACE
+    // ========================================
     var links = menu.querySelectorAll('a');
     for (var i = 0; i < links.length; i++) {
       links[i].addEventListener('click', closeMenu);
     }
 
-    // Cerrar menú al hacer click fuera
+    // ========================================
+    // CERRAR MENÚ AL HACER CLICK FUERA
+    // ========================================
     document.addEventListener('click', function(e) {
       var target = e.target;
       if (target && !menu.contains(target) && !toggle.contains(target)) {
@@ -142,15 +129,8 @@ const isActive = (href: string) => {
       }
     });
 
-    // Cerrar menú al presionar ESC
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && menu.classList.contains('open')) {
-        closeMenu();
-      }
-    });
-
     // ========================================
-    // EFECTO DE SCROLL - ENCOGIMIENTO
+    // EFECTO DE SCROLL
     // ========================================
     var ticking = false;
 
@@ -175,37 +155,15 @@ const isActive = (href: string) => {
       }
     });
 
-    // Ejecutar al cargar para verificar estado inicial
     handleScroll();
 
-    // ========================================
-    // CORRECCIÓN PARA MÓVIL: Re-evaluar al cambiar de orientación
-    // ========================================
-    if (window.matchMedia) {
-      var mediaQuery = window.matchMedia('(max-width: 768px)');
-      mediaQuery.addEventListener('change', function() {
-        if (!mediaQuery.matches) {
-          closeMenu();
-        }
-      });
-    }
-
-    // ========================================
-    // CORRECCIÓN PARA NAVEGADORES MÓVILES
-    // ========================================
-    if (window.innerWidth <= 768) {
-      menu.classList.remove('open');
-      menu.style.display = '';
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-
     console.log('✅ Navbar inicializado correctamente');
-  })();
+  });
 </script>
 
 <style>
   /* ========================================
-     NAVBAR PRINCIPAL - TEMA OSCURO
+     NAVBAR PRINCIPAL
      ======================================== */
   .navbar {
     position: fixed;
@@ -223,7 +181,6 @@ const isActive = (href: string) => {
     height: 76px;
   }
 
-  /* Estado encogido al hacer scroll */
   .navbar.scrolled {
     height: 60px;
     background: rgba(15, 23, 42, 0.92);
@@ -264,11 +221,6 @@ const isActive = (href: string) => {
     transform: scale(1.02);
   }
 
-  .logo-text {
-    color: #e2e8f0;
-    position: relative;
-  }
-
   .logo-highlight {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
     -webkit-background-clip: text;
@@ -294,8 +246,7 @@ const isActive = (href: string) => {
     padding: 8px;
     border-radius: 8px;
     transition: background 0.2s;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
+    z-index: 1001;
   }
 
   .menu-toggle:hover {
@@ -379,11 +330,6 @@ const isActive = (href: string) => {
     background: rgba(251, 191, 36, 0.08);
   }
 
-  .nav-link-text {
-    position: relative;
-    z-index: 1;
-  }
-
   .nav-indicator {
     position: absolute;
     bottom: 2px;
@@ -437,16 +383,6 @@ const isActive = (href: string) => {
     color: #0f172a;
   }
 
-  .btn-cta:active {
-    transform: translateY(0);
-  }
-
-  .btn-icon {
-    width: 1.125rem;
-    height: 1.125rem;
-    flex-shrink: 0;
-  }
-
   /* ========================================
      RESPONSIVE - MOBILE
      ======================================== */
@@ -471,12 +407,10 @@ const isActive = (href: string) => {
       font-size: 1.25rem;
     }
 
-    /* Mostrar toggle en móvil */
     .menu-toggle {
       display: flex;
     }
 
-    /* Menú oculto por defecto en móvil */
     .nav-menu {
       position: fixed;
       top: 64px;
@@ -490,14 +424,16 @@ const isActive = (href: string) => {
       background: rgba(15, 23, 42, 0.98);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(251, 191, 36, 0.08);
+      overflow-y: auto;
+      display: flex !important;
+      /* Estados controlados por JavaScript */
       transform: translateX(100%);
       opacity: 0;
       visibility: hidden;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow-y: auto;
-      border-top: 1px solid rgba(251, 191, 36, 0.08);
-      display: flex !important;
       pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
     }
 
     .navbar.scrolled .nav-menu {
@@ -529,11 +465,6 @@ const isActive = (href: string) => {
       color: #94a3b8;
     }
 
-    .nav-link:hover {
-      background: rgba(251, 191, 36, 0.04);
-      color: #e2e8f0;
-    }
-
     .nav-link.active {
       background: rgba(251, 191, 36, 0.06);
       color: #fbbf24;
@@ -543,7 +474,6 @@ const isActive = (href: string) => {
       display: none;
     }
 
-    /* Badge de página activa en móvil */
     .nav-link.active::after {
       content: '';
       position: absolute;
@@ -585,25 +515,6 @@ const isActive = (href: string) => {
     .btn-cta {
       padding: 0.5rem 1rem;
       font-size: 0.8125rem;
-    }
-  }
-
-  /* ========================================
-     RESPONSIVE - MÓVIL PEQUEÑO
-     ======================================== */
-  @media (max-width: 480px) {
-    .nav-menu {
-      padding: 1rem;
-    }
-    
-    .nav-link {
-      padding: 0.75rem 0.5rem;
-      font-size: 1rem;
-    }
-    
-    .btn-cta {
-      padding: 0.625rem;
-      font-size: 0.875rem;
     }
   }
 
